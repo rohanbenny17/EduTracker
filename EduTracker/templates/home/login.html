@@ -1,0 +1,68 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>EDUTRACKER</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'home/login.css' %}" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <div id="body">
+            <div class="heading">
+                <h1>EduTracker</h1>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                        <a class="nav-link active" id="student" href="">Student</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" id="teacher" href="">Teacher</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <form id="login-form" method="POST" action="{% url 'login_view' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username">
+                        </div>
+
+                        <div id="username-err" class="alert alert-danger" role="alert">
+                            Please enter your username.
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+
+                        <div id="password-err" class="alert alert-danger" role="alert">
+                            Please enter your password.
+                        </div>
+
+                        {% if msg %}
+                        <div id="validation-err" class="alert alert-danger" role="alert">
+                            {{ msg }}
+                        </div>
+                        {% endif %}
+
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                            <label class="form-check-label" for="remember-me">Remember me</label>
+                        </div>
+
+                        <input type="hidden" id="user" name="user" value="student">
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'home/login.js' %}"></script>
+    </body>
+</html>

@@ -1,0 +1,89 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>EDUTRACKER</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'student/index.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://kit.fontawesome.com/37688146a7.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div id="body">
+            <h1 class="heading">EduTracker</h1>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid">
+                    <div class="navbar-nav">
+                        <div class="navbar-brand" id="my-account"><i class='fas fa-user-circle' style='font-size:36px'></i></div>
+                        <div class="nav-item nav-link active" id="marks">Marks</div>
+                        <div class="nav-item nav-link active" id="attendance">Attendance</div>
+                    </div>
+                    <div class="navbar-nav">
+                        <div class="nav-item nav-link active" id="change-password">Change Password <i class="fas fa-key"></i></div>
+                        <a href="{% url 'logout_view' %}">
+                            <div class="nav-item nav-link active" id="logout" style="margin-left: auto;">Logout  <i class="fas fa-sign-out-alt"></i></div>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            
+            <div id="my-profile-view" style="display: none;">
+            </div>
+            <div id="form-overlay" class="overlay">
+                <div id="form-dialog" class="dialog">
+                    {% csrf_token %}
+                    <button id="close-form" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px;">Update Contact</h3>
+                    <div class="form-group">
+                        <label>Mobile No <span style="color: red;">*</span></label>
+                        <input class="form-control" type="text" id="update-phone-no" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email <span style="color: red;">*</span></label>
+                        <input class="form-control" type="email" id="update-email" required>
+                    </div>
+                    <div id="update-form-err" class="alert alert-danger" role="alert">
+                    </div>
+                    <button class="btn btn-primary" id="save-form" title="No Changes" style="cursor: not-allowed;" disabled>Save</button>
+                </div>
+
+                <div id="change-password-dialog" class="dialog" style="min-width: 300px;">
+                    <button id="close-change-password" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px;">Change Password</h3>
+                    <div class="form-group">
+                        <label>Old Password <span style="color: red;">*</span></label>
+                        <input class="form-control" type="password" id="old-password" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password <span style="color: red;">*</span></label>
+                        <input class="form-control" type="password" id="new-password" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password <span style="color: red;">*</span></label>
+                        <input class="form-control" type="password" id="confirm-password" value="" required>
+                    </div>
+                    <div class="form-check" style="margin-bottom: 7px;">
+                        <input class="form-check-input" type="checkbox" value="" id="show-password">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Show Passwords
+                        </label>
+                    </div>
+                    <div id="change-password-err" class="alert alert-danger err" role="alert" style="max-width: 250px;">
+                    </div>
+                    <button class="btn btn-primary" id="save-change-password" title="Enter Old Password" style="cursor: not-allowed;"  disabled>Save</button>
+                </div>
+
+            </div>
+            <div id="marks-view" style="display: none;">
+            </div>
+            <div id="attendance-view" style="display: none;">
+            </div>
+        </div>
+        <script>
+            const studentId = "{{request.user.id}}";
+        </script>
+        <script src="{% static 'student/index.js' %}"></script>
+    </body>
+</html>

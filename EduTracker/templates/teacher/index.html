@@ -1,0 +1,324 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>EDUTRACKER</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'teacher/index.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://kit.fontawesome.com/37688146a7.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div id="body">
+            {% csrf_token %}
+            <h1 class="heading">EduTracker</h1>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid">
+                    <div class="navbar-nav">
+                        <div class="navbar-brand" id="my-account"><i class='fas fa-user-circle' style='font-size:36px' title="My Profile"></i></div>
+                        <div class="nav-item nav-link active" id="mentee">Mentee</div>
+                        <div class="nav-item nav-link active" id="subject">Subject</div>
+                    </div>
+                    <div class="navbar-nav">
+                        <div class="nav-item nav-link active" id="change-password">Change Password <i class="fas fa-key"></i></div>
+                        <a href="{% url 'logout_view' %}">
+                            <div class="nav-item nav-link active" id="logout" style="margin-left: auto;">Logout  <i class="fas fa-sign-out-alt"></i></div>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            <div id="my-profile-view" style="display: none;">
+            </div>
+            <div id="mentee-view" style="display: none;">
+            </div>
+            <div id="mentee-overlay" class="overlay">
+
+                <div id="mentee-create-dialog" class="dialog">
+                    <button id="close-mentee-create" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px; text-align: center;">Create mentee</h3>
+                    <div style="display: grid; grid-template-columns: auto auto auto; column-gap: 10px;">
+                        <div class="form-group">
+                            <label>First name <span style="color: red;">*</span></label>
+                            <input class="form-control" type="text" id="mentee-create-firstname" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last name <span style="color: red;">*</span></label>
+                            <input class="form-control" type="text" id="mentee-create-lastname" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Username <span style="color: red;">*</span></label>
+                            <input class="form-control" type="text" id="mentee-create-username" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password <span style="color: red;">*</span></label>
+                            <input class="form-control" type="password" id="mentee-create-password" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email <span style="color: red;">*</span></label>
+                            <input class="form-control" type="email" id="mentee-create-email" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile No <span style="color: red;">*</span></label>
+                            <input class="form-control" type="text" id="mentee-create-phone-no" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth <span style="color: red;">*</span></label>
+                            <input class="form-control" type="date" id="mentee-create-dob" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Year of admission <span style="color: red;">*</span></label>
+                            <input class="form-control" type="number" id="mentee-create-yoa" value="" required>
+                        </div>
+                    </div>
+                    <div id="mentee-create-err" class="alert alert-danger err" role="alert">
+                    </div>
+                    <button class="btn btn-primary" id="save-mentee-create" disabled style="cursor: not-allowed;" title="Enter firstname">Save</button>
+                </div>
+
+                <div id="mentee-delete-dialog" class="dialog">
+                    <button id="close-mentee-delete" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px; text-align: center;">Delete mentee</h3>
+                    <p>Are you sure you want to delete?</p>
+                    <div style="display: flex; justify-content: space-around;">
+                        <button class="btn btn-primary" id="mentee-delete-yes">Yes</button>
+                        <button class="btn btn-primary" id="mentee-delete-no">No</button>
+                    </div>
+                </div>
+
+                <div id="mentee-mark-dialog" class="dialog">
+                    <button id="close-mentee-mark" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px; text-align: center;">Mark</h3>
+                </div>
+
+                <div id="mentee-attendance-dialog" class="dialog">
+                    <button id="close-mentee-attendance" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px; text-align: center;">Attendance</h3>
+                    <div class="form-group">
+                        <label>Student name <span style="color: red;">*</span></label>
+                        <input class="form-control" type="text" value="" id="mentee-attendance-name" required disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Semester <span style="color: red;">*</span></label>
+                        <select class="form-control" id="mentee-attendance-semester">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="studentid-attendance" name="studentid">
+                    <div class="form-group">
+                        <label>Attendance <span style="color: red;">*</span></label>
+                        <input class="form-control" type="number" id="mentee-attendance-attendance" step="0.01" value="" required>
+                    </div>
+                    <div id="mentee-attendance-err" class="alert alert-danger err" role="alert">
+                    </div>
+                    <button class="btn btn-primary" id="save-mentee-attendance" disabled style="cursor: not-allowed;" title="Enter Attendance">Save</button>
+                </div>
+
+                <div id="mentee-edit-dialog" class="dialog">
+                    <button id="close-mentee-edit" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px; text-align: center;">Edit Details</h3>
+                    <div style="display: grid; grid-template-columns: auto auto auto; column-gap: 10px;">
+                        <div class="form-group">
+                            <label>First name <span style="color: red;">*</span></label>
+                            <input class="form-control" type="text" id="mentee-edit-firstname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last name <span style="color: red;">*</span></label>
+                            <input class="form-control" type="text" id="mentee-edit-lastname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Username <span style="color: red;">*</span></label>
+                            <input class="form-control" type="text" id="mentee-edit-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email <span style="color: red;">*</span></label>
+                            <input class="form-control" type="email" id="mentee-edit-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile No <span style="color: red;">*</span></label>
+                            <input class="form-control" type="text" id="mentee-edit-phone-no" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date of birth <span style="color: red;">*</span></label>
+                            <input class="form-control" type="date" id="mentee-edit-dob" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Year of admission <span style="color: red;">*</span></label>
+                            <input class="form-control" type="number" id="mentee-edit-yoa" required>
+                        </div>
+                        <input type="hidden" id="studentid" name="studentid">
+                    </div>
+                    <div id="mentee-edit-err" class="alert alert-danger err" role="alert">
+                    </div>
+                    <button class="btn btn-primary" id="save-mentee-edit" title="No changes" style="cursor: not-allowed;" disabled>Save</button>
+                </div>
+            </div>
+
+            <div id="subject-view" style="display: none;">
+                <div class="heading">Subject</div>
+                <div style="display: grid; grid-template-columns: auto auto;">
+                    <div style="justify-self: start;">
+                        <button class="btn btn-primary" style="margin-top: 10px;" id="subject-mark-create"><i class="fas fa-plus"></i> Add Mark</button>
+                    </div>
+                    <div class="container" style="margin-top: 15px; justify-self: end;">
+                        <div class="row" style="justify-content: flex-end;">
+                            <div class="col-sm-5" style="padding: 0px 10px; max-width: 150px;">
+                                <div class="form-group">
+                                    <select class="form-control" id="subject-semester" style="float: right;">
+                                        <option selected disabled>Semester</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                        <option>6</option>
+                                        <option>7</option>
+                                        <option>8</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-5" style="padding: 0px 10px; max-width: 150px;">
+                                <div class="form-group">
+                                    <select class="form-control" id="subject-term" style="float: right;">
+                                        <option selected disabled>Term</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2" style="padding: 0px 0px 0px 10px; max-width: 75px;">
+                                <div class="form-group">
+                                    <button class="btn btn-primary" id="subject-marks-btn" style="float: right; cursor: not-allowed;" title="Select Semester" disabled>Show</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="subject-marks" style="margin-top: 20px;">
+                </div>
+            </div>
+            <div id="subject-overlay" class="overlay">
+
+                <div id="mark-create-dialog" class="dialog">
+                    <button id="close-mark-create" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px; text-align: center;">Add Mark</h3>
+                    <div class="form-group">
+                        <!-- <select class="form-control" id="mark-create-student">
+                        </select> -->
+                        <datalist id="students">
+                        </datalist>
+                        <input type="search" required id="mark-create-student" list="students" class="form-control" placeholder="Student" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" id="mark-create-semester">
+                            <option selected disabled>Semester</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" id="mark-create-term">
+                            <option selected disabled>Term</option>
+                            <option>1</option>
+                            <option>2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="number" id="mark-create-mark" step="0.01" placeholder="Marks" required>
+                    </div>
+                    <div id="subject-mark-create-err" style="display: none;" class="alert alert-danger err" role="alert">
+                    </div>                    
+                    <button class="btn btn-primary" id="save-mark-create" disabled style="cursor: not-allowed;" title="Select Student">Save</button>
+                </div>
+
+                <div id="mark-edit-dialog" class="dialog">
+                    <button id="close-mark-edit" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px; text-align: center;">Edit Mark</h3>
+                    <div class="form-group">
+                        <label>Student name <span style="color: red;">*</span></label>
+                        <input class="form-control" type="text" value="" id="mark-edit-name" required disabled>
+                    </div>
+                    <input type="hidden" id="markid" name="markid">
+                    <div class="form-group">
+                        <label>Mark <span style="color: red;">*</span></label>
+                        <input class="form-control" type="number" step="0.01" id="mark-edit-mark" value="" required>
+                    </div>
+                    <div id="subject-mark-edit-err" class="alert alert-danger err" role="alert">
+                    </div>
+                    <button class="btn btn-primary" id="save-mark-edit" style="cursor: not-allowed;" title="Enter Mark" disabled>Save</button>
+                </div>
+
+                <div id="mark-delete-dialog" class="dialog">
+                    <button id="close-mark-delete" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px; text-align: center;">Delete mark</h3>
+                    <p>Are you sure you want to delete?</p>
+                    <div style="display: flex; justify-content: space-around;">
+                        <button class="btn btn-primary" id="mark-delete-yes">Yes</button>
+                        <button class="btn btn-primary" id="mark-delete-no">No</button>
+                    </div>
+                </div>
+            </div>
+            <div id="form-overlay" class="overlay">
+                <div id="form-dialog" class="dialog">
+                    <button id="close-form" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px;">Update Contact</h3>
+                    <div class="form-group">
+                        <label>Mobile No <span style="color: red;">*</span></label>
+                        <input class="form-control" type="text" id="update-phone-no" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email <span style="color: red;">*</span></label>
+                        <input class="form-control" type="email" value="" id="update-email" required>
+                    </div>
+                    <div id="update-form-err" class="alert alert-danger err" role="alert">
+                    </div>
+                    <button class="btn btn-primary" id="save-form" title="No changes" style="cursor: not-allowed;"  disabled>Save</button>
+                </div>
+
+                <div id="change-password-dialog" class="dialog" style="min-width: 300px;">
+                    <button id="close-change-password" class="close-btn">&times;</button>
+                    <h3 style="margin-bottom: 14px;">Change Password</h3>
+                    <div class="form-group">
+                        <label>Old Password <span style="color: red;">*</span></label>
+                        <input class="form-control" type="password" id="old-password" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password <span style="color: red;">*</span></label>
+                        <input class="form-control" type="password" id="new-password" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password <span style="color: red;">*</span></label>
+                        <input class="form-control" type="password" id="confirm-password" value="" required>
+                    </div>
+                    <div class="form-check" style="margin-bottom: 7px;">
+                        <input class="form-check-input" type="checkbox" value="" id="show-password">
+                        <label class="form-check-label" for="defaultCheck1">
+                            Show Passwords
+                        </label>
+                    </div>
+                    <div id="change-password-err" class="alert alert-danger err" role="alert" style="max-width: 250px;">
+                    </div>
+                    <button class="btn btn-primary" id="save-change-password" title="Enter Old Password" style="cursor: not-allowed;"  disabled>Save</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            const teacherId = "{{request.user.id}}";
+        </script>
+        <script src="{% static 'teacher/index.js' %}"></script>
+    </body>
+</html>
